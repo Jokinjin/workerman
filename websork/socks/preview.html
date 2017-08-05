@@ -1,0 +1,51 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+ <body>
+ 	<div id="htmls">	
+ 		<!-- <tr>
+ 			<td><img src="http://imgupload.com/tmp/北京快乐8.png"></td>
+ 			<td>北京快乐8</td>
+ 		</tr> -->
+	 </div>
+ </body>
+ 	<script>
+ 		// 假设服务端ip为127.0.0.1
+		ws = new WebSocket("ws://127.0.0.1:2346");
+		ws.onopen = function() {
+			var data = {};
+			data.site_id = 't';
+			data.str = 'find';
+		    console.log("连接成功");
+		    ws.send(JSON.stringify(data));
+		};
+		ws.onmessage = function(e) {
+			var cont = document.getElementById('htmls');
+			var obj_json = eval("("+e.data+")");
+			var atr = '';
+			for(var i in obj_json){ 
+				atr +="<tr>";
+				atr +="<td>";
+				atr +="<img src='http://imgupload.com/"+obj_json[i]['path']+"'>";
+				atr +="</td>";
+				atr +="<td>";
+				atr +=obj_json[i]['img_name'];
+				atr +="</td>";
+				atr +="<td><input type='button' value='删除' onclick='del_img(\""+obj_json[i]['hid_name']+"\");'></td>";
+				atr +="</tr><br/><br/><br/>";
+		     } 
+		     cont.innerHTML = atr;
+		     console.log(e.data);
+		};
+
+		function del_img(ing_name){
+			var data = {};
+			data.ing_name = ing_name;
+			data.site_id ="t";
+			data.str ="del";
+			ws.send(JSON.stringify(data));
+			history.go(0) 
+		}
+ 	</script>
+ </html> 
